@@ -1,4 +1,5 @@
-📑 ContractLens
+📑 ContractLens - ContractLens: AI-Powered Document Intelligence for ERP Systems
+
 
 ContractLens is an ERP-integrated document copilot that helps businesses manage contracts, invoices, and scanned documents more efficiently.
 The project demonstrates an end-to-end pipeline: file ingestion → OCR → structured storage → document QA → summarization.
