@@ -20,8 +20,7 @@ FastAPI backend with /upload endpoint.
 Simple HTML upload page.
 
 Uploaded files stored locally in data/uploads/.
-
-![Sprint1 Architecture](docs\c432b90c5d334d249fdede4d66b492b4.png)
+![Sprint1 Architecture](docs/c432b90c5d334d249fdede4d66b492b4.png)
 
 Sprint 2 (OCR & Preprocessing) ⏳
 
