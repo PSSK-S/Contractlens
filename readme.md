@@ -22,38 +22,47 @@ Simple HTML upload page.
 Uploaded files stored locally in data/uploads/.
 ![Sprint1 Architecture](docs/c432b90c5d334d249fdede4d66b492b4.png)
 
-Sprint 2 (OCR & Preprocessing) ⏳
+✅ Sprint 2 – OCR & Preprocessing
 
-Convert PDFs → images with pdf2image.
+Convert PDFs → images with PyMuPDF.
 
-OCR support via Tesseract/EasyOCR.
+OCR with EasyOCR (supports multiple languages).
 
-Save raw extracted text to database (SQLite/Postgres).
+Store extracted text + metadata in SQLite using SQLAlchemy.
 
-Sprint 3 (Document QA) 🔜
+Added endpoints:
 
-Integrate Hugging Face Document QA pipeline.
+POST /upload → process PDF, run OCR, store text.
 
-Answer key questions (vendor, total, due date).
+GET /document/{doc_id} → fetch full OCR text.
 
-Highlight bounding boxes on document previews.
+![ContractLens – Sprint 2: OCR & Preprocessing](docs/ContractLens-Sprint2-OCR.png)
 
-Sprint 4 (Summarization & Storage) 🔜
+🔜 Sprint 3 – Document QA
 
-Summarize long documents with Hugging Face models (BART/T5).
+Integrate Hugging Face Question-Answering model.
 
-Store metadata + text in structured database for ERP integration.
+Ask structured questions (vendor, total, due date).
+
+Highlight extracted answers on document previews.
+
+🔜 Sprint 4 – Summarization & ERP Storage
+
+Summarize long documents using BART / T5 models.
+
+Store metadata + text for downstream ERP integration.
+
 
 ✅ Sprint 1 – Deliverables
 Features
 
-/health route to confirm server status.
+/health route to confirm server status
 
-/upload endpoint for PDFs/images.
+/upload endpoint for PDFs/images
 
-Frontend form (index.html) with JS fetch call.
+Frontend form (index.html) with JS fetch() call
 
-Unique file IDs generated, files saved under data/uploads/.
+Unique file IDs generated → files saved under data/uploads/
 
 Demo
 
@@ -76,60 +85,71 @@ Upload a file → server responds with JSON:
 
 File appears in data/uploads/.
 
+✅ Sprint 2 – Deliverables
+Features
+
+PDF → image conversion (PyMuPDF)
+
+OCR using EasyOCR
+
+SQLite database with documents and page_artifacts tables
+
+/upload and /document/{doc_id} API routes
+
+Auto-created folders:
+
+data/uploads/ → original PDFs
+
+processed/ → per-page PNGs
+
+data/contractlens.db → SQLite database
+
+Demo
+
+Start the server:
+
+uvicorn app.main:app --reload
+
+
+Open http://127.0.0.1:8000/docs
+ or your static upload page.
+Upload a PDF → server returns OCR text preview.
+
+🧠 Learnings
+
+PyMuPDF gives fast, high-quality PDF → image conversion.
+
+EasyOCR is simple to integrate for multilingual OCR.
+
+SQLite via SQLAlchemy is perfect for quick local storage.
+
+FastAPI dependency injection (Depends(get_db)) simplifies DB sessions.
+
 🛠️ Tech Stack
 
-Python 3.11
-
-FastAPI – modern web framework for APIs
-
-Uvicorn – ASGI server for FastAPI
-
-HTML + JavaScript – basic frontend upload form
-
-venv – Python virtual environment isolation
+Backend: FastAPI · Python 3.11 · Uvicorn
+OCR: PyMuPDF · EasyOCR · Pillow
+Database: SQLite · SQLAlchemy
+Frontend: HTML + JavaScript (upload page)
+Environment: venv + dotenv
 
 ⚙️ Installation & Setup
-
-Clone the repo:
-
-git clone https://github.com/<your-username>/contractlens.git
+git clone https://github.com/PSSK-S/contractlens.git
 cd contractlens
 
-
-Create and activate a virtual environment:
-
-python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate      # Windows
-
-
-Install dependencies:
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
+# source .venv/bin/activate  # Mac/Linux
 
 pip install -r requirements.txt
-
-
-Run the server:
-
-uvicorn main:app --reload
-
-📌 Learnings (Sprint 1)
-
-FastAPI vs Uvicorn → framework vs server.
-
-venv vs Docker → Python sandbox vs full container.
-
-Debugging 405 errors (method mismatch, static vs API mounts).
+uvicorn app.main:app --reload
 
 📅 Next Steps
 
-🔜 Sprint 2 → OCR and text extraction.
-
-🔜 Sprint 3 → Document QA pipeline.
-
+🔜 Sprint 3 → Document QA pipeline (Hugging Face).
 🔜 Sprint 4 → Summarization + structured storage.
 
 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome.
-Feel free to open a pull request or suggest ideas in the issues tab.
-
+Contributions, issues, and feature requests are welcome!
+Feel free to open a PR or start a discussion in the issues tab.
