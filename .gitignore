@@ -21,3 +21,5 @@ processed/
 ~/.EasyOCR/
 ~/.cache/
 ~/.torch/
+
+*.png
