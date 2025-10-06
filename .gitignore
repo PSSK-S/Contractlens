@@ -16,6 +16,8 @@ Thumbs.db
 data/uploads/
 data/contractlens.db
 processed/
+**/processed/
+
 
 # EasyOCR model cache (downloads)
 ~/.EasyOCR/
