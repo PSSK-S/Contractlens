@@ -1,11 +1,23 @@
-# Ignore virtual environment
-venv/
+# Virtual environment
 .venv/
+env/
+venv/
 
-# Ignore Python cache files
+# Python cache
 __pycache__/
 *.pyc
 
-# Ignore uploads
-data/uploads/
+# IDE / OS files
+.vscode/
+.DS_Store
+Thumbs.db
 
+# Local data + processed artifacts
+data/uploads/
+data/contractlens.db
+processed/
+
+# EasyOCR model cache (downloads)
+~/.EasyOCR/
+~/.cache/
+~/.torch/
