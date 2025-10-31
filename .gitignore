@@ -18,10 +18,19 @@ data/contractlens.db
 processed/
 **/processed/
 
-
-# EasyOCR model cache (downloads)
+# OCR / Model caches
 ~/.EasyOCR/
 ~/.cache/
 ~/.torch/
+.huggingface/
+transformers_cache/
+torch_cache/
+cache/
+*.bin
+*.safetensors
 
+# Images / diagrams
 *.png
+
+# Environment files
+.env

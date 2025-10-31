@@ -5,15 +5,29 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pathlib import Path
 from dotenv import load_dotenv
+from pydantic import BaseModel
 import os
 import uuid
 import shutil
 
 from .db import init_db, get_db
-from .pipelines import process_pdf_and_store
+from .pipelines import process_pdf_and_store, answer_question, summarize_text
 from .models import Document
 
+"""
+File: main.py
+App: ContractLens – FastAPI
+
+Change History:
+- 2025-10-15 | v0.3.0 | Satya Pithani | Added /qa (POST) and /summarize/{doc_id} (GET); updated app title.
+- 2025-10-10 | v0.2.0 | Satya Pithani | Added /upload, /document/{doc_id}, static hosting, health.
+- 2025-10-03 | v0.1.0 | Satya Pithani | Project bootstrap with CORS and static mount.
+"""
+
+
 app = FastAPI(title="ContractLens – Sprint 2")
+
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -99,3 +113,58 @@ def get_document(doc_id: int, db: Session = Depends(get_db)):
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
     return {"doc_id": doc.doc_id, "filename": doc.filename, "raw_text": doc.raw_text}
+
+
+#====================================================================
+# Sprint 3 : QA & Summarization
+#====================================================================
+
+
+class QARequest(BaseModel):
+    doc_id: int
+    question : str
+
+@app.post("/qa")
+def qa_endpoint(payload: QARequest, db: Session = Depends(get_db)):
+    """
+    Expects Json body with doc_id and question fields.
+    arg:
+        payload (QARequest): The request payload containing doc_id and question.
+        db (Session): Database session dependency.
+    Returns:    
+        JSONResponse: A JSON response containing the answer to the question.
+    Example:
+        {
+            "doc_id": 1,
+            "question": "What is the effective date of the contract?"
+        }
+
+    """
+    doc = db.query(Document).filter(Document.doc_id == payload.doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Doc not found")
+    if not doc.raw_text:
+        raise HTTPException(status_code=400, detail="No text found in document for performing QA")
+    answer, score = answer_question(doc.raw_text, payload.question)
+    if not answer:
+        return {"doc_id": payload.doc_id, 
+                "question": payload.question, 
+                "answer": None, 
+                "score": 0.0}
+    
+    return {"doc_id": doc.doc_id,
+             "question": payload.question, 
+             "answer": answer, 
+             "score": score}
+
+
+@app.get("/Summarize/{doc_id}")
+def summarize_endpoint(doc_id: int, db: Session = Depends(get_db)):
+    doc = db.query(Document).filter(Document.doc_id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    if not (doc.raw_text and doc.raw_text.strip()):
+        raise HTTPException(status_code=400, detail="Document has no OCR text")
+
+    summary = summarize_text(doc.raw_text)
+    return {"doc_id": doc_id, "summary": summary}

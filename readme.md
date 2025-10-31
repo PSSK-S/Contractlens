@@ -14,7 +14,7 @@ The project demonstrates an end-to-end pipeline: file ingestion → OCR → stru
 
 🚀 Project Roadmap (Sprints)
 
-Sprint 1 (Setup & Upload) ✅
+Sprint 1 (Setup & Upload) 
 
 FastAPI backend with /upload endpoint.
 
@@ -23,7 +23,7 @@ Simple HTML upload page.
 Uploaded files stored locally in data/uploads/.
 ![Sprint1 Architecture](docs/c432b90c5d334d249fdede4d66b492b4.png)
 
-✅ Sprint 2 – OCR & Preprocessing
+ Sprint 2 – OCR & Preprocessing
 
 Convert PDFs → images with PyMuPDF.
 
@@ -47,11 +47,16 @@ Ask structured questions (vendor, total, due date).
 
 Highlight extracted answers on document previews.
 
-🔜 Sprint 4 – Summarization & ERP Storage
+![Contractlens - Sprint 3 Architecture](docs\Sprint-3-image.png)
 
-Summarize long documents using BART / T5 models.
 
-Store metadata + text for downstream ERP integration.
+🔜 Sprint 4 – Cloud OCR & ERP Integration
+
+Integrate AWS Textract for high-accuracy OCR.
+Store uploaded and processed files in Amazon S3.
+Add USE_TEXTRACT=True flag to toggle OCR engines.
+Extend database with document source location and metadata.
+Begin linking extracted fields to ERP tables for reporting.
 
 
 ✅ Sprint 1 – Deliverables
@@ -116,7 +121,61 @@ Open http://127.0.0.1:8000/docs
  or your static upload page.
 Upload a PDF → server returns OCR text preview.
 
-🧠 Learnings
+
+✅ Sprint 3 – Document QA & Summarization
+
+Integrated Hugging Face pipelines for document understanding.
+
+Added endpoints:
+
+POST /qa → Ask questions about stored OCR text.
+
+GET /summarize/{doc_id} → Generate a concise summary.
+
+Question Answering Model: deepset/roberta-base-squad2 (default)
+
+Summarization Model: facebook/bart-large-cnn (default)
+
+Optional lightweight alternatives:
+
+QA → distilbert-base-cased-distilled-squad
+
+Summarization → sshleifer/distilbart-cnn-12-6
+
+Returns plain JSON responses (answer, score, and summary)—no UI updates in this sprint.
+
+No database schema changes; built on existing OCR pipeline.
+
+Demo
+
+POST /qa
+{
+  "doc_id": 1,
+  "question": "What is the total amount?"
+}
+
+
+Response:
+
+{
+  "doc_id": 1,
+  "question": "What is the total amount?",
+  "answer": "$2,345.00",
+  "score": 0.98
+}
+
+GET /summarize/1
+
+
+Response:
+
+{
+  "doc_id": 1,
+  "summary": "This invoice lists the items purchased and the total payment due..."
+}
+
+
+ Learnings
 
 PyMuPDF gives fast, high-quality PDF → image conversion.
 
@@ -145,11 +204,11 @@ python -m venv .venv
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 
-📅 Next Steps
+ Next Steps
 
-🔜 Sprint 3 → Document QA pipeline (Hugging Face).
-🔜 Sprint 4 → Summarization + structured storage.
+=🔜 Sprint 4 – Cloud OCR & ERP Integration
 
+=
 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
