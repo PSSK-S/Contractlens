@@ -30,7 +30,6 @@ cache/
 *.safetensors
 
 # Images / diagrams
-*.png
 
 # Environment files
 .env
