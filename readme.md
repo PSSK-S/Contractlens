@@ -47,7 +47,7 @@ Ask structured questions (vendor, total, due date).
 
 Highlight extracted answers on document previews.
 
-![Contractlens - Sprint 3 Architecture](docs\Sprint-3-image.png)
+![Contractlens - Sprint 3 Architecture](docs/Sprint-3-image.png)
 
 
 🔜 Sprint 4 – Cloud OCR & ERP Integration
